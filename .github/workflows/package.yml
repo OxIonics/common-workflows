@@ -2,6 +2,13 @@ name: Package
 
 on:
   workflow_call:
+    secrets:
+      PYPI_SERVER:
+        required: true
+      PYPI_LOGIN:
+        required: true
+      PYPI_PASSWORD:
+        required: true
 
 jobs:
   build_and_upload_wheel:
