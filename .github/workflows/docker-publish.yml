@@ -25,9 +25,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          # This is pretty nasty when we want to use the image in package.yml
-          # we don't have an opportunity to login, so we don't logout here.
-          logout: false
 
       - name: Build image
         run: |
