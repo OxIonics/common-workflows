@@ -1,0 +1,55 @@
+on:
+  workflow_call:
+    inputs:
+      TEST_PATH:
+        required: false
+        default: .
+        type: string
+      INSTALL_ARGS:
+        required: false
+        type: string
+      PACKAGE_NAME:
+        required: true
+        type: string
+
+jobs:
+  # we can't reuse the sibling test workflow here because we're limited to a
+  # workflow depth of 2.
+  test:
+    runs-on: self-hosted
+    container: ghcr.io/oxionics/poetry:1.6
+    name: Unit Tests
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: Test
+        run: $POETRY run pytest -v ${{ inputs.TEST_PATH }}
+
+  flake8:
+    runs-on: self-hosted
+    container: ghcr.io/oxionics/poetry:1.6
+    name: Flake8
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: Flake8
+        run: $POETRY run flake8 ${{ inputs.PACKAGE_NAME }}
+
+  black:
+    runs-on: self-hosted
+    container: ghcr.io/oxionics/poetry:1.6
+    name: Formatting check
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: Black check
+        run: $POETRY run black --check ${{ inputs.PACKAGE_NAME }}
