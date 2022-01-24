@@ -21,6 +21,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          submodules: recursive
 
       - name: Install Poetry dynamic versioning
         run: $POETRY_PIP install poetry-dynamic-versioning==0.13.1
