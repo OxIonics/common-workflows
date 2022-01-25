@@ -1,0 +1,56 @@
+name: Build binaries
+
+on:
+  workflow_call:
+    secrets:
+      GHA_TOKEN:
+        required: true
+      VIVADO_ROOT_DIR:
+        required: true
+    inputs:
+      vivado_version:
+        description: 'Version of Vivado to use'
+        default: "2020.1"
+        type: string
+        required: true
+      config_module:
+        description: >-
+          Python module name containing a variable `config` of type
+          `hwdescription.config.Config` describing the set of Kasli's
+          to build for.
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: [self-hosted, vivado]
+    name: Build Binaries
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Allow git dependencies
+        if: github.event_name != 'push'
+        run: >-
+          git config --global
+          url."https://oxionics:${{ secrets.GHA_TOKEN }}@github.com".insteadOf
+          ssh://git@github.com
+
+      - name: Install
+        run: poetry install
+
+      - name: Build Binaries
+        run: |
+          export PATH=${{ secrets.VIVADO_ROOT_DIR }}/${{ inputs.vivado_version }}/bin/:$PATH
+          poetry run binary_build \
+            --gh-user oxionics \
+            --gh-password ${{ secrets.GHA_TOKEN }} \
+            --publish \
+            ${{ github.workspace }} \
+            ${{ inputs.config_module }} \
+            binaries
+
