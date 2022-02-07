@@ -11,11 +11,16 @@ on:
       PACKAGE_NAME:
         required: true
         type: string
+      RUN_TESTS:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   # we can't reuse the sibling test workflow here because we're limited to a
   # workflow depth of 2.
   test:
+    if: ${{ inputs.RUN_TESTS }}
     runs-on: self-hosted
     container: ghcr.io/oxionics/poetry:1.6
     name: Unit Tests
