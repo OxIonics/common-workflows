@@ -45,7 +45,7 @@ jobs:
 
       - name: Build Binaries
         run: |
-          export PATH=${{ secrets.VIVADO_ROOT_DIR }}/${{ inputs.vivado_version }}/bin/:$PATH
+          export PATH=${{ secrets.VIVADO_ROOT_DIR }}/${{ inputs.vivado_version || '2020.1' }}/bin/:$PATH
           poetry run binary_build \
             --gh-user oxionics \
             --gh-password ${{ secrets.GHA_TOKEN }} \
