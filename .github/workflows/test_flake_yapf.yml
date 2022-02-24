@@ -20,7 +20,7 @@ jobs:
   # workflow depth of 2.
   test:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.6
+    container: ghcr.io/oxionics/poetry:1.7
     name: Unit Tests
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -33,7 +33,7 @@ jobs:
 
   flake8:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.6
+    container: ghcr.io/oxionics/poetry:1.7
     name: Flake8
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -46,7 +46,7 @@ jobs:
 
   yapf:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.6
+    container: ghcr.io/oxionics/poetry:1.7
     name: Yapf
     steps:
       - uses: OxIonics/poetry-preamble@master
