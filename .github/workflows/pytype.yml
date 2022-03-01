@@ -1,0 +1,26 @@
+on:
+  workflow_call:
+    secrets:
+      GHA_TOKEN:
+        required: true
+    inputs:
+      INSTALL_ARGS:
+        required: false
+        type: string
+      PYTYPE_ARGS:
+        required: true
+        type: string
+        default: '.'
+
+jobs:
+  pytype:
+    runs-on: self-hosted
+    container: ghcr.io/oxionics/poetry:1.7
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: PyType
+        run: $POETRY run pytype ${{ inputs.PYTYPE_ARGS}}
