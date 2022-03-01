@@ -37,7 +37,7 @@ jobs:
         if: github.event_name != 'push'
         run: >-
           git config --global
-          url."https://oxionics:${{ secrets.GHA_TOKEN }}@github.com".insteadOf
+          url."https://oxfordionics:${{ secrets.GHA_TOKEN }}@github.com".insteadOf
           ssh://git@github.com
 
       - name: Install
