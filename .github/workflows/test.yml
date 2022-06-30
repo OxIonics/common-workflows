@@ -22,7 +22,7 @@ jobs:
     container: ghcr.io/oxionics/poetry:1.8
     name: Unit Tests
     steps:
-      - uses: OxIonics/poetry-preamble@master
+      - uses: OxIonics/poetry-preamble@use-git-lfs
         with:
           INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
