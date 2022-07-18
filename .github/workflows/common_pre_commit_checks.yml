@@ -1,0 +1,43 @@
+name: Common pre-commit checks
+
+on:
+  workflow_call:
+    secrets:
+      GHA_TOKEN:
+        required: true
+    inputs:
+      INSTALL_ARGS:
+        required: false
+        type: string
+
+jobs:
+  check:
+    runs-on: self-hosted
+    container: ghcr.io/oxionics/poetry:1.8
+    name: Common pre-commit checks
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: Trailing white space
+        run: >-
+          $POETRY run pre-commit run 
+          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }} 
+          --to-ref=HEAD
+          trailing-whitespace
+
+      - name: End of file
+        run: >-
+          $POETRY run pre-commit run 
+          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }} 
+          --to-ref=HEAD
+          end-of-file-fixer
+
+      - name: Check added large files
+        run: >-
+          $POETRY run pre-commit run 
+          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }} 
+          --to-ref=HEAD
+          check-added-large-files
