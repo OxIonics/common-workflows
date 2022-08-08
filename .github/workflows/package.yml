@@ -31,6 +31,9 @@ jobs:
       - name: Install Poetry dynamic versioning
         run: $POETRY_PIP install poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_PIP_ARGS }}
 
+      - name: Check version in pyproject.toml matches latest tag
+        run: ${{ github.action_path }}/check_version.sh $POETRY pyproject.toml
+
       - name: Build wheel
         run: $POETRY build -f wheel
 
