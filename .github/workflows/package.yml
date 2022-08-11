@@ -14,6 +14,10 @@ on:
         required: false
         default: ""
         type: string
+      upload:
+        type: boolean
+        description: Upload package
+        default: false
 
 jobs:
   build_and_upload_wheel:
@@ -35,12 +39,12 @@ jobs:
         run: $POETRY build -f wheel
 
       - name: Configure poetry
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || inputs.upload == 'true'
         run: |
           $POETRY config repositories.oxionics ${{ secrets.PYPI_SERVER }}
           $POETRY config http-basic.oxionics \
             ${{ secrets.PYPI_LOGIN }} ${{ secrets.PYPI_PASSWORD }}
 
       - name: Upload wheel
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' || inputs.upload == 'true'
         run: $POETRY publish -r oxionics
