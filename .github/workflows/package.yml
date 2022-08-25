@@ -19,7 +19,7 @@ jobs:
   build_and_upload_wheel:
     name: Build and upload wheel
     container:
-      image: ghcr.io/oxionics/poetry:1.8
+      image: ghcr.io/oxionics/poetry:1.11
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -29,18 +29,18 @@ jobs:
           submodules: recursive
 
       - name: Install Poetry dynamic versioning
-        run: $POETRY_PIP install poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_PIP_ARGS }}
+        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_PIP_ARGS }}
 
       - name: Build wheel
-        run: $POETRY build -f wheel
+        run: poetry build -f wheel
 
       - name: Configure poetry
         if: github.event_name == 'push'
         run: |
-          $POETRY config repositories.oxionics ${{ secrets.PYPI_SERVER }}
-          $POETRY config http-basic.oxionics \
+          poetry config repositories.oxionics ${{ secrets.PYPI_SERVER }}
+          poetry config http-basic.oxionics \
             ${{ secrets.PYPI_LOGIN }} ${{ secrets.PYPI_PASSWORD }}
 
       - name: Upload wheel
         if: github.event_name == 'push'
-        run: $POETRY publish -r oxionics
+        run: poetry publish -r oxionics

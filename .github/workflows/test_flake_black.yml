@@ -25,7 +25,7 @@ jobs:
   test:
     if: ${{ inputs.RUN_TESTS }}
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.8
+    container: ghcr.io/oxionics/poetry:1.11
     name: Unit Tests
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -34,11 +34,11 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Test
-        run: $POETRY run pytest -v ${{ inputs.TEST_PATH }}
+        run: poetry run pytest -v ${{ inputs.TEST_PATH }}
 
   flake8:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.8
+    container: ghcr.io/oxionics/poetry:1.11
     name: Flake8
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -47,11 +47,11 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Flake8
-        run: $POETRY run flake8 ${{ inputs.PACKAGE_NAME }}
+        run: poetry run flake8 ${{ inputs.PACKAGE_NAME }}
 
   black:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.8
+    container: ghcr.io/oxionics/poetry:1.11
     name: Formatting check
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -60,4 +60,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Black check
-        run: $POETRY run black --check ${{ inputs.PACKAGE_NAME }}
+        run: poetry run black --check ${{ inputs.PACKAGE_NAME }}
