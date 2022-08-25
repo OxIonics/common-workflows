@@ -15,7 +15,7 @@ on:
 jobs:
   pytype:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.11
+    container: ghcr.io/oxionics/poetry:1.12
     steps:
       - uses: OxIonics/poetry-preamble@master
         with:

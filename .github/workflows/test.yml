@@ -19,7 +19,7 @@ on:
 jobs:
   test:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.11
+    container: ghcr.io/oxionics/poetry:1.12
     name: Unit Tests
     steps:
       - uses: OxIonics/poetry-preamble@master
