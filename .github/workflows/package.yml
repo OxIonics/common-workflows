@@ -10,7 +10,7 @@ on:
       PYPI_PASSWORD:
         required: true
     inputs:
-      EXTRA_POETRY_PIP_ARGS:
+      EXTRA_POETRY_INJECT_ARGS:
         required: false
         default: ""
         type: string
@@ -29,7 +29,7 @@ jobs:
           submodules: recursive
 
       - name: Install Poetry dynamic versioning
-        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_PIP_ARGS }}
+        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
       - name: Build wheel
         run: poetry build -f wheel
