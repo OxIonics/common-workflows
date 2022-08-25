@@ -15,7 +15,7 @@ on:
 jobs:
   pytype:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.8
+    container: ghcr.io/oxionics/poetry:1.12
     steps:
       - uses: OxIonics/poetry-preamble@master
         with:
@@ -23,4 +23,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: PyType
-        run: $POETRY run pytype ${{ inputs.PYTYPE_ARGS}}
+        run: poetry run pytype ${{ inputs.PYTYPE_ARGS}}
