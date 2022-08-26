@@ -14,6 +14,10 @@ on:
         required: false
         default: ""
         type: string
+      CHECK_PACKAGE_VERSION:
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build_and_upload_wheel:
@@ -30,6 +34,54 @@ jobs:
 
       - name: Install Poetry dynamic versioning
         run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
+
+      - name: Check package versions
+        if: ${{ inputs.CHECK_PACKAGE_VERSION }}
+        shell: python
+        run: |
+          import os
+          import subprocess
+          import sys
+          from typing import NoReturn
+          import tomlkit
+          from packaging.version import Version
+
+
+          def run_command(*cmd) -> str:
+              return subprocess.check_output(cmd, encoding="utf-8").strip()
+
+
+          def gh_command(kind: str, msg: str):
+              print(f"::{kind}::{msg}" if "CI" in os.environ else msg)
+
+
+          def fail_with(msg: str) -> NoReturn:
+              gh_command("error", msg)
+              sys.exit(1)
+
+
+          with open("pyproject.toml", "r") as h:
+              project = tomlkit.load(h)
+              projectVersion = Version(project["tool"]["poetry"]["version"])
+
+          actualVersion = Version(run_command("poetry", "version", "-s"))
+
+          if projectVersion == actualVersion:
+              gh_command("warning", "poetry-dynamic-versioning is not set up on this repo")
+          elif projectVersion.release[0:2] != actualVersion.release[0:2]:
+              # Only compare the major and minor version.
+              fail_with(
+                  f"Version in pyproject.toml ({projectVersion}) does not match "
+                  f"git-derived version ({actualVersion}).",
+              )
+
+          if os.path.isfile("setup.py"):
+              setupVersion = Version(run_command("python", "setup.py", "--version"))
+              if setupVersion.base_version != str(projectVersion):
+                  fail_with(
+                      f"Version in pyproject.toml ({projectVersion}) and setup.py "
+                      f"({setupVersion}) do not match.",
+                  )
 
       - name: Build wheel
         run: poetry build -f wheel
