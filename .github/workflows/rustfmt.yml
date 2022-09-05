@@ -1,0 +1,31 @@
+on:
+  workflow_call:
+    secrets:
+      GHA_TOKEN:
+        required: true
+    inputs:
+      CRATE_PATH:
+        required: false
+        default: .
+        type: string
+      CARGO_ARGS:
+        required: false
+        default: +nightly
+        type: string
+      INSTALL_ARGS:
+        required: false
+        type: string
+
+jobs:
+  test:
+    runs-on: self-hosted
+    container: ghcr.io/oxionics/poetry:1.15
+    name: Check formatting of Rust code
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: rustfmt
+        run: cargo ${{ inputs.CARGO_ARGS }} fmt --verbose --check --all --manifest-path ${{ inputs.CRATE_PATH }}/Cargo.toml
