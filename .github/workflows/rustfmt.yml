@@ -22,7 +22,7 @@ jobs:
     container: ghcr.io/oxionics/poetry:1.15
     name: Check formatting of Rust code
     steps:
-      - uses: OxIonics/poetry-preamble@master
+      - uses: OxIonics/poetry-preamble@add-nightly-rust
         with:
           INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
