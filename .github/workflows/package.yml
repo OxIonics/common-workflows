@@ -23,7 +23,7 @@ jobs:
   build_and_upload_wheel:
     name: Build and upload wheel
     container:
-      image: ghcr.io/oxionics/poetry:1.16
+      image: ghcr.io/oxionics/poetry:1.17
     runs-on: self-hosted
     steps:
       - name: Checkout
