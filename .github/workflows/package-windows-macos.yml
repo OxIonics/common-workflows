@@ -16,7 +16,7 @@ on:
         type: string
 
 jobs:
-  build_and_upload_wheel_windows_and_macos:
+  build_wheel_windows_and_macos:
     name: Bulid wheels for Windows and MacOS
     strategy:
       matrix:
@@ -64,13 +64,24 @@ jobs:
       - name: Build wheel
         run: poetry build -f wheel
 
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./dist/*whl
+
+  upload_wheels:
+    if: github.event_name == 'push'
+    container: ghcr.io/oxionics/poetry:1.17
+    runs-on: self-hosted
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./dist
+
       - name: Configure poetry
-        if: github.event_name == 'push'
         run: |
           poetry config repositories.oxionics ${{ secrets.PYPI_SERVER }}
           poetry config http-basic.oxionics \
             ${{ secrets.PYPI_LOGIN }} ${{ secrets.PYPI_PASSWORD }}
 
       - name: Upload wheel
-        if: github.event_name == 'push'
         run: poetry publish -r oxionics
