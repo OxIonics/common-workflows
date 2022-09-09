@@ -69,6 +69,7 @@ jobs:
           path: ./dist/*whl
 
   upload_wheels:
+    needs: build_wheel_windows_and_macos
     if: github.event_name == 'push'
     container: ghcr.io/oxionics/poetry:1.17
     runs-on: self-hosted
