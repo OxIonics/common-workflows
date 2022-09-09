@@ -1,0 +1,76 @@
+name: Package
+
+on:
+  workflow_call:
+    secrets:
+      PYPI_SERVER:
+        required: true
+      PYPI_LOGIN:
+        required: true
+      PYPI_PASSWORD:
+        required: true
+    inputs:
+      EXTRA_POETRY_INJECT_ARGS:
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  build_and_upload_wheel_windows_and_macos:
+    name: Bulid wheels for Windows and MacOS
+    strategy:
+      matrix:
+        os: [ windows-2022, macos-10.15 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install specific pip version
+        run: python3 -m pip install --upgrade pip==21.3.1
+
+      - name: Install pipx
+        run: pip install pipx==1.1.0
+
+      - name: Install poetry etc into pipx environment
+        run: |
+          pipx install poetry==1.1.14
+          pipx install poethepoet==0.16.0
+          pipx install maturin==0.13.2
+
+      - name: Install Poetry dynamic versioning
+        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
+
+      - name: Install additional Python dependencies
+        run: |
+          pip install tomlkit
+          pipx install poetry==1.1.14
+          pipx install poethepoet==0.16.0
+          pipx install maturin==0.13.2
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Build wheel
+        run: poetry build -f wheel
+
+      - name: Configure poetry
+        if: github.event_name == 'push'
+        run: |
+          poetry config repositories.oxionics ${{ secrets.PYPI_SERVER }}
+          poetry config http-basic.oxionics \
+            ${{ secrets.PYPI_LOGIN }} ${{ secrets.PYPI_PASSWORD }}
+
+      - name: Upload wheel
+        if: github.event_name == 'push'
+        run: poetry publish -r oxionics
