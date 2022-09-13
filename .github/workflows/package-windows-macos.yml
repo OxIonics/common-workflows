@@ -17,11 +17,18 @@ on:
 
 jobs:
   build_wheel_windows_and_macos:
-    name: Bulid wheels for Windows and MacOS
+    name: Build wheels for ${{ matrix.name }}
     strategy:
       matrix:
-        os: [ windows-2022, macos-10.15 ]
-    runs-on: ${{ matrix.os }}
+        include:
+        - name: Windows
+          uses: windows-2022
+          extra-target: ""
+        - name: MacOS
+          uses: macos-10.15
+          extra-target: aarch64-apple-darwin
+
+    runs-on: ${{ matrix.uses }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -59,6 +66,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          target: ${{ matrix.extra-target }}
           override: true
 
       - name: Build wheel
@@ -66,7 +74,10 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
+          name: wheel-${{ matrix.uses }}
           path: ./dist/*whl
+          if-no-files-found: error
+          retention-days: 1
 
   upload_wheels:
     needs: build_wheel_windows_and_macos
@@ -74,9 +85,21 @@ jobs:
     container: ghcr.io/oxionics/poetry:1.17
     runs-on: self-hosted
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - uses: actions/download-artifact@v2
         with:
-          path: ./dist
+          path: ./artifacts
+
+      - name: Extract wheels
+        run: |
+          mkdir -p dist
+          mv artifacts/*/* dist
+
+      - name: Install Poetry dynamic versioning
+        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
       - name: Configure poetry
         run: |
