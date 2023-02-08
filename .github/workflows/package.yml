@@ -107,5 +107,5 @@ jobs:
             ${{ secrets.PYPI_LOGIN }} ${{ secrets.PYPI_PASSWORD }}
 
       - name: Upload wheel
-        if: github.event_name == 'push' && !steps.poetry-lock-changed.outputs.only_modified == 'false'
+        if: github.event_name == 'push' && steps.poetry-lock-changed.outputs.only_modified == 'false'
         run: poetry publish -r oxionics
