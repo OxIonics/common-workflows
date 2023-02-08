@@ -82,7 +82,7 @@ jobs:
   upload_wheels:
     needs: build_wheel_windows_and_macos
     if: github.event_name == 'push'
-    container: ghcr.io/oxionics/poetry:1.17
+    container: ghcr.io/oxionics/poetry:1.19
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
