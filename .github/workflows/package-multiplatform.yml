@@ -78,6 +78,9 @@ jobs:
           target: ${{ matrix.extra-target }}
           override: true
 
+      - name: Check poetry lock file
+        run: poetry lock --check
+
       - name: Check package versions
         if: inputs.CHECK_PACKAGE_VERSION
         shell: python

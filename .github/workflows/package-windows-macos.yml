@@ -71,6 +71,9 @@ jobs:
           target: ${{ matrix.extra-target }}
           override: true
 
+      - name: Check poetry lock file
+        run: poetry lock --check
+
       - name: Build wheel
         run: poetry build -f wheel
 

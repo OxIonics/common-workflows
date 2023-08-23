@@ -41,6 +41,9 @@ jobs:
       - name: Set default Rust toolchain
         run: rustup default stable
 
+      - name: Check poetry lock file
+        run: poetry lock --check
+
       - name: Check package versions
         if: ${{ inputs.CHECK_PACKAGE_VERSION }}
         shell: python
