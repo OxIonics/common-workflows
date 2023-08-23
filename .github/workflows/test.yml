@@ -6,10 +6,6 @@ on:
       GHA_TOKEN:
         required: true
     inputs:
-      TEST_PATH:
-        required: false
-        default: .
-        type: string
       INSTALL_ARGS:
         required: false
         type: string
@@ -28,4 +24,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Test
-        run: poetry run pytest -v ${{ inputs.TEST_PATH }}
+        run: poe test
