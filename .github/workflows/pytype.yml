@@ -7,10 +7,6 @@ on:
       INSTALL_ARGS:
         required: false
         type: string
-      PYTYPE_ARGS:
-        required: true
-        type: string
-        default: '.'
 
 jobs:
   pytype:
@@ -23,4 +19,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: PyType
-        run: poetry run pytype ${{ inputs.PYTYPE_ARGS}}
+        run: poe types
