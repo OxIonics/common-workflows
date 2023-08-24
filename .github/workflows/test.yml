@@ -9,6 +9,10 @@ on:
       INSTALL_ARGS:
         required: false
         type: string
+      TEST_TASK:
+        required: false
+        type: string
+        default: test
 
 
 
@@ -24,4 +28,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Test
-        run: poe test
+        run: poe ${{ inputs.TEST_TASK }}
