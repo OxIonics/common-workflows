@@ -53,7 +53,7 @@ jobs:
         run: python3 -m pip install --upgrade pip==21.3.1
 
       - name: Install pipx
-        run: pip install pipx==1.1.0
+        run: pip install pipx==1.1.0 tomlkit
 
       - name: Install poetry etc into pipx environment
         run: |
@@ -63,13 +63,6 @@ jobs:
 
       - name: Install Poetry dynamic versioning
         run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
-
-      - name: Install additional Python dependencies
-        run: |
-          pip install tomlkit
-          pipx install poetry==1.1.14
-          pipx install poethepoet==0.16.0
-          pipx install maturin==0.13.2
 
       - uses: actions-rs/toolchain@v1
         with:
