@@ -57,7 +57,7 @@ jobs:
 
       - name: Install poetry etc into pipx environment
         run: |
-          pipx install poetry==1.1.14
+          pipx install poetry==1.3.2
           pipx install poethepoet==0.16.0
           pipx install maturin==0.13.2
 
