@@ -4,15 +4,8 @@ on:
       GHA_TOKEN:
         required: true
     inputs:
-      TEST_PATH:
-        required: false
-        default: .
-        type: string
       INSTALL_ARGS:
         required: false
-        type: string
-      PACKAGE_NAME:
-        required: true
         type: string
       RUN_TESTS:
         required: false
@@ -25,7 +18,7 @@ jobs:
   test:
     if: ${{ inputs.RUN_TESTS }}
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.19
+    container: ghcr.io/oxionics/poetry:1.20
     name: Unit Tests
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -34,7 +27,7 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Test
-        run: poetry run pytest -v ${{ inputs.TEST_PATH }}
+        run: poe test
 
   flake8:
     runs-on: self-hosted
@@ -47,7 +40,7 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Flake8
-        run: poetry run flake8 ${{ inputs.PACKAGE_NAME }}
+        run: poe flake
 
   black:
     runs-on: self-hosted
@@ -60,4 +53,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Black check
-        run: poetry run black --check ${{ inputs.PACKAGE_NAME }}
+        run: poe fmt-test

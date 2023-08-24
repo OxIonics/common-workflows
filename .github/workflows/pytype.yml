@@ -7,15 +7,11 @@ on:
       INSTALL_ARGS:
         required: false
         type: string
-      PYTYPE_ARGS:
-        required: true
-        type: string
-        default: '.'
 
 jobs:
   pytype:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.19
+    container: ghcr.io/oxionics/poetry:1.20
     steps:
       - uses: OxIonics/poetry-preamble@master
         with:
@@ -23,4 +19,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: PyType
-        run: poetry run pytype ${{ inputs.PYTYPE_ARGS}}
+        run: poe types

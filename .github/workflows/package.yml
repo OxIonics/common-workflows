@@ -23,7 +23,7 @@ jobs:
   build_and_upload_wheel:
     name: Build and upload wheel
     container:
-      image: ghcr.io/oxionics/poetry:1.19
+      image: ghcr.io/oxionics/poetry:1.20
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -40,6 +40,9 @@ jobs:
 
       - name: Set default Rust toolchain
         run: rustup default stable
+
+      - name: Check poetry lock file
+        run: poetry lock --check
 
       - name: Check package versions
         if: ${{ inputs.CHECK_PACKAGE_VERSION }}

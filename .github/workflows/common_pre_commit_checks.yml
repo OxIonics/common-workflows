@@ -13,7 +13,7 @@ on:
 jobs:
   check:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.19
+    container: ghcr.io/oxionics/poetry:1.20
     name: Common pre-commit checks
     steps:
       - uses: OxIonics/poetry-preamble@master
