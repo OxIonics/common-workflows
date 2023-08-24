@@ -31,7 +31,7 @@ jobs:
 
   flake8:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.19
+    container: ghcr.io/oxionics/poetry:1.20
     name: Flake8
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -44,7 +44,7 @@ jobs:
 
   black:
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.19
+    container: ghcr.io/oxionics/poetry:1.20
     name: Formatting check
     steps:
       - uses: OxIonics/poetry-preamble@master
