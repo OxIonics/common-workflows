@@ -58,11 +58,11 @@ jobs:
       - name: Install poetry etc into pipx environment
         run: |
           pipx install poetry==1.6.1
-          pipx install poethepoet==0.16.0
+          pipx install poethepoet==0.22.0
           pipx install maturin==0.13.2
 
       - name: Install Poetry dynamic versioning
-        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
+        run: pipx inject poetry poetry-dynamic-versioning[plugin]==1.0.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -158,7 +158,7 @@ jobs:
           mv artifacts/*/* dist
 
       - name: Install Poetry dynamic versioning
-        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
+        run: pipx inject poetry poetry-dynamic-versioning[plugin]==1.0.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
       - name: Configure poetry
         run: |

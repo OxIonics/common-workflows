@@ -33,7 +33,7 @@ jobs:
           submodules: recursive
 
       - name: Install Poetry dynamic versioning
-        run: pipx inject poetry poetry-dynamic-versioning==0.13.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
+        run: pipx inject poetry poetry-dynamic-versioning[plugin]==1.0.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
       - name: Install additional Python dependencies
         run: pip install tomlkit
