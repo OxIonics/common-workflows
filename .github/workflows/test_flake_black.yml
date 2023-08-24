@@ -18,7 +18,7 @@ jobs:
   test:
     if: ${{ inputs.RUN_TESTS }}
     runs-on: self-hosted
-    container: ghcr.io/oxionics/poetry:1.19
+    container: ghcr.io/oxionics/poetry:1.20
     name: Unit Tests
     steps:
       - uses: OxIonics/poetry-preamble@master
