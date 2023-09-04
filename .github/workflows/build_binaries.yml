@@ -36,8 +36,8 @@ jobs:
       - name: Allow git dependencies
         if: github.event_name != 'push'
         run: |
-          git config --global url."https://oxfordionics:${{ inputs.GHA_TOKEN }}@github.com".insteadOf ssh://git@github.com
-          git config --global url."https://oxfordionics:${{ inputs.GHA_TOKEN }}@github.com/".insteadOf git@github.com:
+          git config --global url."https://oxfordionics:${{ secrets.GHA_TOKEN }}@github.com".insteadOf ssh://git@github.com
+          git config --global url."https://oxfordionics:${{ secrets.GHA_TOKEN }}@github.com/".insteadOf git@github.com:
 
 
       - name: Install
