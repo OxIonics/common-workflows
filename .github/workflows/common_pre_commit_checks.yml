@@ -16,7 +16,7 @@ jobs:
     container: ghcr.io/oxionics/poetry:1.21
     name: Common pre-commit checks
     steps:
-      - uses: OxIonics/poetry-preamble@master
+      - uses: OxIonics/poetry-preamble@use-token-on-checkout
         with:
           INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
