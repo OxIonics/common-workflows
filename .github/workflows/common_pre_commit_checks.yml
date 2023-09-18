@@ -14,7 +14,7 @@ jobs:
   check:
     runs-on:
       group: Default
-      labels: [self-hosted, python, test]
+      labels: self-hosted
     container: ghcr.io/oxionics/poetry:1.21
     name: Common pre-commit checks
     steps:
