@@ -23,7 +23,9 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, vivado]
+    runs-on:
+      group: Default
+      labels: [self-hosted, vivado]
     name: Build Binaries
     steps:
 

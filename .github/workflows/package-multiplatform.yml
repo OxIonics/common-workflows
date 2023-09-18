@@ -26,7 +26,7 @@ jobs:
       matrix:
         include:
         - name: Linux
-          # The version of Ubuntu implicitly controls the version of glibc 
+          # The version of Ubuntu implicitly controls the version of glibc
           # required by any resulting wheels.
           uses: ubuntu-20.04
           extra-target: ""
@@ -136,7 +136,9 @@ jobs:
     needs: build_wheels
     if: github.event_name == 'push'
     container: ghcr.io/oxionics/poetry:1.21
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: [self-hosted, python, package]
     steps:
       - uses: actions/checkout@v3
         with:

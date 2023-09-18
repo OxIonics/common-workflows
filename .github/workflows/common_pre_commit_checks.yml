@@ -12,7 +12,9 @@ on:
 
 jobs:
   check:
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: [self-hosted, python, test]
     container: ghcr.io/oxionics/poetry:1.21
     name: Common pre-commit checks
     steps:
@@ -23,21 +25,21 @@ jobs:
 
       - name: Trailing white space
         run: >-
-          poetry run pre-commit run 
-          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }} 
+          poetry run pre-commit run
+          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }}
           --to-ref=HEAD
           trailing-whitespace
 
       - name: End of file
         run: >-
-          poetry run pre-commit run 
-          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }} 
+          poetry run pre-commit run
+          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }}
           --to-ref=HEAD
           end-of-file-fixer
 
       - name: Check added large files
         run: >-
-          poetry run pre-commit run 
-          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }} 
+          poetry run pre-commit run
+          --from-ref=${{ github.event.pull_request.base.sha || 'HEAD~1' }}
           --to-ref=HEAD
           check-added-large-files

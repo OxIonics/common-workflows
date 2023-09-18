@@ -17,7 +17,9 @@ jobs:
   # workflow depth of 2.
   test:
     if: ${{ inputs.RUN_TESTS }}
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: [self-hosted, python, test]
     container: ghcr.io/oxionics/poetry:1.21
     name: Unit Tests
     steps:
@@ -30,7 +32,9 @@ jobs:
         run: poe test
 
   flake8:
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: [self-hosted, python, test]
     container: ghcr.io/oxionics/poetry:1.21
     name: Flake8
     steps:
@@ -43,7 +47,9 @@ jobs:
         run: poe flake
 
   black:
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: [self-hosted, python, test]
     container: ghcr.io/oxionics/poetry:1.21
     name: Formatting check
     steps:
