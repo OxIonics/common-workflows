@@ -18,7 +18,9 @@ on:
 
 jobs:
   test:
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: self-hosted
     container: ghcr.io/oxionics/poetry:1.21
     name: Unit Tests
     steps:

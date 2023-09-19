@@ -10,7 +10,9 @@ on:
 
 jobs:
   pytype:
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: self-hosted
     container: ghcr.io/oxionics/poetry:1.21
     steps:
       - uses: OxIonics/poetry-preamble@master

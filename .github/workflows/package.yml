@@ -24,7 +24,9 @@ jobs:
     name: Build and upload wheel
     container:
       image: ghcr.io/oxionics/poetry:1.21
-    runs-on: self-hosted
+    runs-on:
+      group: Default
+      labels: self-hosted
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -102,7 +104,7 @@ jobs:
           files: poetry.lock
       - name: Check if files other than poetry.lock have changed
         if: |
-          github.event_name == 'push' && 
+          github.event_name == 'push' &&
           steps.poetry-lock-exists.outputs.file_exists == 'true'
         id: poetry-lock-changed
         uses: tj-actions/changed-files@v35
@@ -111,7 +113,7 @@ jobs:
       - name: Configure poetry
         if: |
           github.event_name == 'push' && (
-            steps.poetry-lock-changed.outcome == 'skipped' || 
+            steps.poetry-lock-changed.outcome == 'skipped' ||
             steps.poetry-lock-changed.outputs.only_modified == 'false'
           )
         run: |
