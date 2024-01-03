@@ -102,7 +102,7 @@ jobs:
           github.event_name == 'push' && 
           steps.poetry-lock-exists.outputs.file_exists == 'true'
         id: poetry-lock-changed
-        uses: tj-actions/changed-files@v35
+        uses: tj-actions/changed-files@v41
         with:
             files: poetry.lock
       - name: Configure poetry
