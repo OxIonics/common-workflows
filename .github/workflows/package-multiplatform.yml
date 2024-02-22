@@ -21,21 +21,11 @@ on:
 
 jobs:
   build_wheels:
-    name: Build wheels for ${{ matrix.name }}
+    name: Build wheels for Python ${{ matrix.python }} on ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-        - name: Linux
-          # The version of Ubuntu implicitly controls the version of glibc
-          # required by any resulting wheels.
-          uses: ubuntu-20.04
-          extra-target: ""
-        - name: Windows
-          uses: windows-2022
-          extra-target: ""
-        - name: MacOS
-          uses: macos-11
-          extra-target: aarch64-apple-darwin
+        os: [ubuntu-20.04, windows-2022, macos-11]
+        python: ["3.8", "3.10"]
 
     runs-on: ${{ matrix.uses }}
     steps:
@@ -68,7 +58,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          target: ${{ matrix.extra-target }}
+          target: '${{ contains(matrix.os, "macos") && "aarch64-apple-darwin" || "" }}'
           override: true
 
       - name: Check poetry lock file
