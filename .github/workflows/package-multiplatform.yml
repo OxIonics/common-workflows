@@ -58,7 +58,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          target: "${{ startsWith(matrix.os, 'macos') && 'aarch64-apple-darwin' }}"
+          target: "${{ startsWith(matrix.os, 'macos') && 'aarch64-apple-darwin' || '' }}"
           override: true
 
       - name: Check poetry lock file
