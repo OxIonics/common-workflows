@@ -10,6 +10,10 @@ on:
       BUILD_ARGS:
         required: false
         type: string
+      TAG_SUFFIX:
+        required: false
+        type: string
+        default: ""
 
 jobs:
   push:
@@ -49,8 +53,10 @@ jobs:
           [ "$VERSION" == "main" -o "$VERSION" == "master" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker tag $IMAGE_NAME:$GITHUB_RUN_NUMBER $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
+          TAG="$VERSION${{ inputs.TAG_SUFFIX }}"
+          echo TAG=$TAG
+          docker tag $IMAGE_NAME:$GITHUB_RUN_NUMBER $IMAGE_ID:$TAG
+          docker push $IMAGE_ID:$TAG
 
       - name: Clean up image
         run: docker image rm ${{ inputs.IMAGE_NAME }}:$GITHUB_RUN_NUMBER
