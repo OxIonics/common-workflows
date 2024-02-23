@@ -24,8 +24,8 @@ jobs:
 
     concurrency:
       # If triggered by a push, we will upload the image to the container
-      # registry. Logging in/out of the registry seems in parallel running
-      # jobs seems to interfere with each other.
+      # registry. Logging in/out of the registry from jobs running in parallel
+      # seems to interfere with each other.
       group: "${{ github.event_name == 'push' && 'ghcr-login' || null }}"
 
     steps:
