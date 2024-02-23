@@ -14,6 +14,10 @@ on:
         required: false
         type: string
         default: ""
+      PREPARE_COMMAND:
+        required: true
+        type: string
+        default: "true"
 
 jobs:
   push:
@@ -24,6 +28,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - name: Make preparations
+        run: ${{ inputs.PREPARE_COMMAND }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
