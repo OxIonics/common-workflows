@@ -21,23 +21,13 @@ on:
 
 jobs:
   build_wheels:
-    name: Build wheels for ${{ matrix.name }}
+    name: Build wheels for Python ${{ matrix.python }} on ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-        - name: Linux
-          # The version of Ubuntu implicitly controls the version of glibc
-          # required by any resulting wheels.
-          uses: ubuntu-20.04
-          extra-target: ""
-        - name: Windows
-          uses: windows-2022
-          extra-target: ""
-        - name: MacOS
-          uses: macos-11
-          extra-target: aarch64-apple-darwin
+        os: [ubuntu-20.04, windows-2022, macos-11]
+        python: ["3.8", "3.10"]
 
-    runs-on: ${{ matrix.uses }}
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,7 +37,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.8'
+          python-version: ${{ matrix.python }}
 
       - name: Install specific pip version
         run: python3 -m pip install --upgrade pip==21.3.1
@@ -68,7 +58,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-          target: ${{ matrix.extra-target }}
+          target: "${{ startsWith(matrix.os, 'macos') && 'aarch64-apple-darwin' || '' }}"
           override: true
 
       - name: Check poetry lock file
@@ -127,7 +117,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: wheel-${{ matrix.uses }}
+          name: wheel-${{ matrix.os }}-py${{ matrix.python }}
           path: ./dist/*whl
           if-no-files-found: error
           retention-days: 1
