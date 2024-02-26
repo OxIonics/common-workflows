@@ -18,16 +18,20 @@ on:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        python: ["3.8", "3.10"]
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.21
-    name: Unit Tests
+    container: ghcr.io/oxionics/poetry:1.22-py${{ matrix.python }}
+    name: Unit Tests (Python ${{ matrix.python }})
     steps:
       - uses: OxIonics/poetry-preamble@master
         with:
           INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+          PYTHON_VERSION: ${{ matrix.python }}
 
       - name: Test
         run: poe ${{ inputs.TEST_TASK }}
