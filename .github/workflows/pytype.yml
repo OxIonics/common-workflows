@@ -13,7 +13,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.21
+    container: ghcr.io/oxionics/poetry:1.22-py3.8
     steps:
       - uses: OxIonics/poetry-preamble@master
         with:

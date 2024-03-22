@@ -39,7 +39,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.21
+    container: ghcr.io/oxionics/poetry:1.22-py3.8
     name: Flake8
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -54,7 +54,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.21
+    container: ghcr.io/oxionics/poetry:1.22-py3.8
     name: Formatting check
     steps:
       - uses: OxIonics/poetry-preamble@master
