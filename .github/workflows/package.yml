@@ -29,7 +29,7 @@ jobs:
       labels: self-hosted
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
@@ -107,7 +107,7 @@ jobs:
           github.event_name == 'push' &&
           steps.poetry-lock-exists.outputs.file_exists == 'true'
         id: poetry-lock-changed
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v44
         with:
             files: poetry.lock
       - name: Configure poetry

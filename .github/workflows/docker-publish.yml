@@ -29,7 +29,7 @@ jobs:
       group: "${{ github.event_name == 'push' && 'ghcr-login' || null }}"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build image
         run: |
