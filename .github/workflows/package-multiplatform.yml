@@ -49,7 +49,6 @@ jobs:
         run: |
           pipx install poetry==1.6.1
           pipx install poethepoet==0.22.0
-          pipx install maturin==0.13.2
 
       - name: Install Poetry dynamic versioning
         run: pipx inject poetry poetry-dynamic-versioning[plugin]==1.0.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
