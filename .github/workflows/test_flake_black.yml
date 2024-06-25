@@ -19,7 +19,7 @@ jobs:
     if: ${{ inputs.RUN_TESTS }}
     strategy:
       matrix:
-        python: ["3.8", "3.10"]
+        python: ["3.10"]
     runs-on:
       group: Default
       labels: self-hosted
@@ -39,7 +39,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.22-py3.8
+    container: ghcr.io/oxionics/poetry:1.22-py3.10
     name: Flake8
     steps:
       - uses: OxIonics/poetry-preamble@master
@@ -54,7 +54,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.22-py3.8
+    container: ghcr.io/oxionics/poetry:1.22-py3.10
     name: Formatting check
     steps:
       - uses: OxIonics/poetry-preamble@master
