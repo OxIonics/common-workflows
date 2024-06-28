@@ -128,3 +128,6 @@ jobs:
               steps.poetry-lock-changed.outputs.only_modified == 'false'
           )
         run: poetry publish -r oxionics
+        env:
+          PIP_REQUESTS_TIMEOUT: 300
+          POETRY_REQUESTS_TIMEOUT: 300
