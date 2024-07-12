@@ -16,9 +16,7 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Build docs
-        run: |
-          cd docs
-          poetry run make html
+        run: poe docs
 
       - uses: actions/upload-artifact@v3
         with:
