@@ -1,0 +1,11 @@
+on:
+  workflow_call
+
+jobs:
+  deploy:
+    if: github.event.ref_type == 'branch'
+    name: delete
+    runs-on: self-hosted
+    steps:
+      - name: Delete rendered docs
+        run: rm -r ~/docs/${{ github.event.repository.name }}/${{ github.event.ref }}
