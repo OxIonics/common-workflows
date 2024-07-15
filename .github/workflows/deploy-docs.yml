@@ -1,0 +1,35 @@
+on:
+  workflow_call:
+    secrets:
+      GHA_TOKEN:
+        required: true
+
+jobs:
+  build_docs:
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/oxionics/poetry:1.22-py3.10
+
+    steps:
+      - uses: OxIonics/poetry-preamble@master
+        with:
+          GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+
+      - name: Build docs
+        run: poe docs
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: rendered-docs
+          path: ./docs/_build/html/*
+
+  deploy_docs:
+    if: ${{ github.event_name == 'push' }}
+    needs: build_docs
+    runs-on: self-hosted
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          # Name is required to prevent additional `artifact` directory
+          name: rendered-docs
+          path: ~/docs/${{ github.event.repository.name }}/${{ github.ref_name }}
