@@ -23,7 +23,7 @@ jobs:
   build_and_upload_wheel:
     name: Build and upload wheel
     container:
-      image: ghcr.io/oxionics/poetry:1.22-py3.10
+      image: ghcr.io/oxionics/poetry:1.23-py3.10
     runs-on:
       group: Default
       labels: self-hosted

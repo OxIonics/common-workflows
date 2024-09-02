@@ -132,7 +132,7 @@ jobs:
   upload_wheels:
     needs: build_wheels
     if: github.event_name == 'push'
-    container: ghcr.io/oxionics/poetry:1.22-py3.10
+    container: ghcr.io/oxionics/poetry:1.23-py3.10
     runs-on:
       group: Default
       labels: self-hosted
