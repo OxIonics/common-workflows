@@ -15,7 +15,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.22-py3.10
+    container: ghcr.io/oxionics/poetry:1.23-py3.10
     name: Common pre-commit checks
     steps:
       - uses: OxIonics/poetry-preamble@master
