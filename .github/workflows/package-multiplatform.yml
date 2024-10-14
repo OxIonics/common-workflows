@@ -61,6 +61,9 @@ jobs:
       - name: Install Poetry dynamic versioning
         run: pipx inject poetry poetry-dynamic-versioning[plugin]==1.0.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
+      - name: Install package dependencies
+        run: poetry install
+
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
