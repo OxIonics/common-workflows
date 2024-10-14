@@ -1,0 +1,63 @@
+name: Rust checks
+
+on:
+  workflow_call:
+    inputs:
+      TEST_ARGS:
+        required: false
+        default: ""
+        type: string
+      CLIPPY_TOOLCHAIN:
+        required: false
+        default: stable
+        type: string
+      TEST_TOOLCHAIN:
+        required: false
+        default: stable
+        type: string
+
+jobs:
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+          components: rustfmt
+      - uses: Swatinem/rust-cache@v2
+      # TODO consider using https://github.com/mbrobbel/rustfmt-check which
+      #      pushes a commit to fix formatting problems
+      # I've failed to get this to output color even passing --color always to
+      # both cargo and rustfmt.
+      - run: cargo +nightly fmt -- --check
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ inputs.CLIPPY_TOOLCHAIN }}
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - uses: giraffate/clippy-action@v1
+        with:
+          reporter: 'github-pr-review'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          clippy_flags: --tests --all-features -- -D warnings
+
+  test:
+    name: Test
+    # 22.04 has Python 3.10. We can use 24.04 when we upgrade to Python 3.12.
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ inputs.TEST_TOOLCHAIN }}
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test ${{ inputs.TEST_ARGS }}
+        name: Test
