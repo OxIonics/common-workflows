@@ -3,6 +3,10 @@ name: Rust checks
 on:
   workflow_call:
     inputs:
+      RUN_TESTS:
+        required: false
+        default: true
+        type: boolean
       TEST_ARGS:
         required: false
         default: ""
@@ -55,6 +59,7 @@ jobs:
 
   test:
     name: Test
+    if: ${{ inputs.RUN_TESTS }}
     runs-on: ubuntu-${{ inputs.UBUNTU_VERSION }}
     steps:
       - uses: actions/checkout@v3
