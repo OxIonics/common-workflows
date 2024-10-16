@@ -25,6 +25,18 @@ on:
         type: string
 
 jobs:
+  debug:
+    name: debugging
+    runs-on: ubuntu-${{ inputs.UBUNTU_VERSION }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+          components: rustdoc
+      - run: rustup which rustdoc
+      - run: rustup which rustc
+
   fmt:
     name: Rustfmt
     runs-on: ubuntu-${{ inputs.UBUNTU_VERSION }}
