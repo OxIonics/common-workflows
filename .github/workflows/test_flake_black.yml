@@ -33,7 +33,7 @@ jobs:
           PYTHON_VERSION: ${{ matrix.python }}
 
       - name: Test
-        run: poe test
+        run: poe test-py
 
   flake8:
     runs-on:
@@ -63,4 +63,4 @@ jobs:
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
 
       - name: Black check
-        run: poe fmt-test
+        run: poe fmt-test-py
