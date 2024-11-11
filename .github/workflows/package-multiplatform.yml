@@ -67,6 +67,9 @@ jobs:
           override: true
           components: ${{ inputs.RUST_COMPONENTS }}
 
+      - name: Debug rust components
+        run: rustup component list
+
       - name: Check poetry lock file
         run: poetry lock --check
 
