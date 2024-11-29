@@ -17,22 +17,6 @@ on:
         type: string
 
 jobs:
-  fmt:
-    name: Rustfmt
-    container:
-      image: ghcr.io/oxionics/poetry:1.26-py3.10
-    runs-on:
-      group: Default
-      labels: self-hosted
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
-        with:
-          toolchain: ${{ inputs.FMT_TOOLCHAIN }}
-          components: rustfmt
-      - uses: Swatinem/rust-cache@v2
-      - run: poe fmt-test-rs
-
   clippy:
     name: Clippy
     container:
