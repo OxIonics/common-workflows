@@ -31,11 +31,7 @@ jobs:
           toolchain: ${{ inputs.CLIPPY_TOOLCHAIN }}
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      - uses: giraffate/clippy-action@v1
-        with:
-          reporter: 'github-pr-review'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          clippy_flags: --tests --all-features -- -D warnings
+      - run: poe lint-rs
 
   test:
     name: Test
