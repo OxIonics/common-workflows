@@ -11,6 +11,10 @@ on:
         required: false
         default: ""
         type: string
+      CLIPPY_FLAGS:
+        required: false
+        default: "--tests --all-features -- -D warnings"
+        type: string
       FMT_TOOLCHAIN:
         required: false
         default: ""
@@ -31,7 +35,7 @@ jobs:
           toolchain: ${{ inputs.CLIPPY_TOOLCHAIN }}
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      - run: poe lint-rs
+      - run: cargo clippy ${{ inputs.CLIPPY_FLAGS }}
 
   test:
     name: Test
