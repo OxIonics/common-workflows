@@ -10,7 +10,7 @@ on:
     inputs:
       vivado_version:
         description: 'Version of Vivado to use'
-        default: "2020.1"
+        default: "2024.2"
         type: string
         required: true
       config_module:
@@ -43,11 +43,11 @@ jobs:
 
 
       - name: Install
-        run: poetry install
+        run: poetry install --sync
 
       - name: Build Binaries
         run: |
-          export PATH=${{ secrets.VIVADO_ROOT_DIR }}/${{ inputs.vivado_version || '2020.1' }}/bin/:$PATH
+          export PATH=${{ secrets.VIVADO_ROOT_DIR }}/${{ inputs.vivado_version || '2024.2' }}/bin/:$PATH
           poetry run binary_build \
             --gh-user oxionics \
             --gh-password ${{ secrets.GHA_TOKEN }} \
