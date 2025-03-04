@@ -29,12 +29,19 @@ jobs:
       group: Default
       labels: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
         with:
           toolchain: ${{ inputs.CLIPPY_TOOLCHAIN }}
           components: clippy
-      - run: cargo clippy ${{ inputs.CLIPPY_FLAGS }}
+
+      - name: Lint with Clippy
+        run: >
+          cargo clippy
+          ${{ inputs.CLIPPY_FLAGS }}
 
   test:
     name: Test
@@ -45,7 +52,11 @@ jobs:
       group: Default
       labels: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
-      - run: poe test-rs
-        name: Test
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+
+      - name: Run Tests
+        run: poe test-rs
