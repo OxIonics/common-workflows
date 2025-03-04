@@ -13,7 +13,7 @@ on:
         type: string
       CLIPPY_FLAGS:
         required: false
-        default: "--tests --all-features -- -D warnings"
+        default: "--tests -D warnings"
         type: string
       FMT_TOOLCHAIN:
         required: false
@@ -22,6 +22,11 @@ on:
       PACKAGES:
         required: false
         description: Comma separated list of packages to run against, if empty the default workspace packages will be used
+        default: ""
+        type: string
+      FEATURES:
+        required: false
+        description: Space or comma separated list of features to activate, if empty all features will be activated
         default: ""
         type: string
 
@@ -48,12 +53,18 @@ jobs:
           if [ ! -z "${{ inputs.PACKAGES }}" ]; then
             echo PACKAGES=$(echo "${{ inputs.PACKAGES }}" | sed 's/[ ,]/ --package /;s/^/--package /') >> $GITHUB_ENV;
           fi
+          if [ ! -z "${{ inputs.FEATURES }}" ]; then
+            echo FEATURES=$(echo "${{ inputs.FEATURES }}" | sed 's/^/--features /') >> $GITHUB_ENV;
+          else
+            echo FEATURES="--all-features" >> $GITHUB_ENV;
+          fi
 
       - name: Lint with Clippy
         run: >
           cargo clippy
           ${{ inputs.CLIPPY_FLAGS }}
           ${{ env.PACKAGES }}
+          ${{ env.FEATURES  }}
 
   test:
     name: Test
@@ -75,8 +86,14 @@ jobs:
           if [ ! -z "${{ inputs.PACKAGES }}" ]; then
             echo PACKAGES=$(echo "${{ inputs.PACKAGES }}" | sed 's/[ ,]/ --package /;s/^/--package /') >> $GITHUB_ENV;
           fi
+          if [ ! -z "${{ inputs.FEATURES }}" ]; then
+            echo FEATURES=$(echo "${{ inputs.FEATURES }}" | sed 's/^/--features /') >> $GITHUB_ENV;
+          else
+            echo FEATURES="--all-features" >> $GITHUB_ENV;
+          fi
 
       - name: Run Tests
         run: >
           poe test-rs
           ${{ env.PACKAGES }}
+          ${{ env.FEATURES }}
