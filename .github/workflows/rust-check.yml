@@ -24,7 +24,7 @@ jobs:
   clippy:
     name: Clippy
     container:
-      image: ghcr.io/oxionics/poetry:1.29-py3.10
+      image: ghcr.io/oxionics/poetry:1.30-py3.10
     runs-on:
       group: Default
       labels: self-hosted
@@ -41,7 +41,7 @@ jobs:
     name: Test
     if: ${{ inputs.RUN_TESTS }}
     container:
-      image: ghcr.io/oxionics/poetry:1.29-py3.10
+      image: ghcr.io/oxionics/poetry:1.30-py3.10
     runs-on:
       group: Default
       labels: self-hosted
