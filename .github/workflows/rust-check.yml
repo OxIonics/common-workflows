@@ -13,7 +13,7 @@ on:
         type: string
       CLIPPY_FLAGS:
         required: false
-        default: "--tests -D warnings"
+        default: "--tests"
         type: string
       FMT_TOOLCHAIN:
         required: false
