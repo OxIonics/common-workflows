@@ -11,14 +11,6 @@ on:
         required: false
         default: ""
         type: string
-      CLIPPY_FLAGS:
-        required: false
-        default: "--tests --all-features -- -D warnings"
-        type: string
-      FMT_TOOLCHAIN:
-        required: false
-        default: ""
-        type: string
 
 jobs:
   clippy:
@@ -34,8 +26,9 @@ jobs:
         with:
           toolchain: ${{ inputs.CLIPPY_TOOLCHAIN }}
           components: clippy
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo clippy ${{ inputs.CLIPPY_FLAGS }}
+
+      - name: Lint with Clippy
+        run: poe lint-rs
 
   test:
     name: Test
@@ -46,8 +39,11 @@ jobs:
       group: Default
       labels: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
-      - uses: Swatinem/rust-cache@v2
-      - run: poe test-rs
-        name: Test
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+
+      - name: Run Tests
+        run: poe test-rs
