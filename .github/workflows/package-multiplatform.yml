@@ -143,7 +143,7 @@ jobs:
 
       - name: Check if files other than poetry.lock have changed
         id: poetry-lock-changed
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@9200e69727eb73eb060652b19946b8a2fdfb654b
         with:
           files: poetry.lock
 
