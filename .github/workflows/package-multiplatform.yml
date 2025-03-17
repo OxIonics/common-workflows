@@ -141,12 +141,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check if files other than poetry.lock have changed
-        id: poetry-lock-changed
-        uses: tj-actions/changed-files@9200e69727eb73eb060652b19946b8a2fdfb654b
-        with:
-          files: poetry.lock
-
       - uses: actions/download-artifact@v4
         with:
           path: ./artifacts
@@ -159,6 +153,12 @@ jobs:
       - name: Install Poetry dynamic versioning
         run: pipx inject poetry poetry-dynamic-versioning[plugin]==1.0.1 ${{ inputs.EXTRA_POETRY_INJECT_ARGS }}
 
+      - name: Check if files other than poetry.lock have changed
+        id: poetry-lock-changed
+        uses: OxIonics/common-actions/has-changed-files@master
+        with:
+            exclude: poetry.lock
+
       - name: Configure poetry
         run: |
           poetry config repositories.oxionics ${{ secrets.PYPI_SERVER }}
@@ -166,9 +166,7 @@ jobs:
             ${{ secrets.PYPI_LOGIN }} ${{ secrets.PYPI_PASSWORD }}
 
       - name: Upload wheel
-        if: |
-          steps.poetry-lock-changed.outcome == 'skipped' ||
-          steps.poetry-lock-changed.outputs.only_modified == 'false'
+        if:  steps.poetry-lock-changed.outputs.changed == 'true'
         run: poetry publish -r oxionics
         env:
           PIP_REQUESTS_TIMEOUT: 300
