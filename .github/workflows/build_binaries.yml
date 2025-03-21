@@ -18,7 +18,7 @@ on:
           Python module name containing a variable `config` of type
           `hwdescription.config.Config` describing the set of Kasli's
           to build for.
-        required: true
+        deprecationMessage: "This option is no longer used."
         type: string
 
 jobs:
@@ -48,10 +48,7 @@ jobs:
       - name: Build Binaries
         run: |
           export PATH=${{ secrets.VIVADO_ROOT_DIR }}/${{ inputs.vivado_version || '2024.2' }}/bin/:$PATH
-          poetry run binary_build \
+          poe build-binaries \
             --gh-user oxionics \
             --gh-password ${{ secrets.GHA_TOKEN }} \
-            --publish \
-            ${{ github.workspace }} \
-            ${{ inputs.config_module }} \
-            binaries
+            --publish
