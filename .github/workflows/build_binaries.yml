@@ -18,7 +18,6 @@ on:
           Python module name containing a variable `config` of type
           `hwdescription.config.Config` describing the set of Kasli's
           to build for.
-        deprecationMessage: "This option is no longer used."
         type: string
 
 jobs:
