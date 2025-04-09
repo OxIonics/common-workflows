@@ -26,13 +26,17 @@ on:
         required: false
         default: ""
         type: string
+      UBUNTU_VERSION:
+        required: false
+        default: "20.04"
+        type: string
 
 jobs:
   build_wheels:
     name: Build wheels for Python ${{ matrix.python }} on ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2022]
+        os: ["ubuntu-${{ inputs.UBUNTU_VERSION }}", windows-2022]
         python: ["3.10"]
 
     runs-on: ${{ matrix.os }}
