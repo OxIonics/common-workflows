@@ -12,4 +12,4 @@ jobs:
         webhook: ${{ secrets.SOFTIES_REVIEW_REQUEST_WEBHOOK_URL }}
         webhook-type: incoming-webhook
         payload: |
-          text: "${{ github.event.pull_request.html_url }}"
+          text: "<${{ github.event.pull_request.html_url }}|${{ github.event.repository.name }}#${{ github.event.pull_request.number }}> ${{ github.event.pull_request.title }}"
