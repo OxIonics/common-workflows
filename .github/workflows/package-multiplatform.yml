@@ -120,7 +120,7 @@ jobs:
           retention-days: 1
 
   upload_wheels:
-    needs: build_wheels
+    needs: [build_linux_wheel, build_windows_wheel]
     if: github.event_name == 'push'
     container: ghcr.io/oxionics/poetry:1.30-py3.10
     runs-on:
