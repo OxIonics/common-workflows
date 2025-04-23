@@ -72,6 +72,11 @@ jobs:
       - name: Check package versions
         uses: OxIonics/common-actions/check-poetry-version@jjc/check-poetry-version
 
+      # This job runs outside of the VPN, so doesn't have access to our devpi server.
+      # Just remove the source for now.
+      - name: Remove OxIonics source
+        run: poetry source remove oxionics
+
       - name: Build wheel
         run: poetry build -f wheel
 
