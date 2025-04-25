@@ -44,7 +44,7 @@ jobs:
         run: poetry check --lock
 
       - name: Check package versions
-        uses: OxIonics/common-actions/check-poetry-version@jjc/check-poetry-version
+        uses: OxIonics/common-actions/check-poetry-version@master
 
       - name: Build wheel
         run: poetry build -f wheel
