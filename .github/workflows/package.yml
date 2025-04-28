@@ -49,25 +49,15 @@ jobs:
       - name: Build wheel
         run: poetry build -f wheel
 
-      - id: poetry-lock-exists
-        if: github.event_name == 'push'
-        uses: andstor/file-existence-action@v2
-        with:
-          files: poetry.lock
       - name: Check if files other than poetry.lock have changed
-        if: |
-          github.event_name == 'push' &&
-          steps.poetry-lock-exists.outputs.file_exists == 'true'
         id: poetry-lock-changed
-        uses: tj-actions/changed-files@9200e69727eb73eb060652b19946b8a2fdfb654b
+        uses: OxIonics/common-actions/has-changed-files@master
         with:
-            files: poetry.lock
+            exclude: poetry.lock
+
       - name: Configure poetry
         if: |
-          github.event_name == 'push' && (
-            steps.poetry-lock-changed.outcome == 'skipped' ||
-            steps.poetry-lock-changed.outputs.only_modified == 'false'
-          )
+          github.event_name == 'push' && steps.poetry-lock-changed.outputs.changed == 'true'
         run: |
           poetry config repositories.oxionics ${{ secrets.PYPI_SERVER }}
           poetry config http-basic.oxionics \
@@ -75,10 +65,7 @@ jobs:
 
       - name: Upload wheel
         if: |
-          github.event_name == 'push' && (
-              steps.poetry-lock-changed.outcome == 'skipped' ||
-              steps.poetry-lock-changed.outputs.only_modified == 'false'
-          )
+          github.event_name == 'push' && steps.poetry-lock-changed.outputs.changed == 'true'
         run: poetry publish -r oxionics
         env:
           PIP_REQUESTS_TIMEOUT: 300
