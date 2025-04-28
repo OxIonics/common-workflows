@@ -13,12 +13,6 @@ on:
         default: "2024.2"
         type: string
         required: true
-      config_module:
-        description: >-
-          Python module name containing a variable `config` of type
-          `hwdescription.config.Config` describing the set of Kasli's
-          to build for.
-        type: string
 
 jobs:
   build:

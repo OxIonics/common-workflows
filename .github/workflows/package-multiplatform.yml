@@ -26,10 +26,6 @@ on:
         required: false
         default: ""
         type: string
-      UBUNTU_VERSION:
-        required: false
-        default: "20.04"
-        type: string
 
 jobs:
   build_windows_wheel:
