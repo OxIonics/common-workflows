@@ -13,15 +13,6 @@ on:
         required: false
         type: string
         default: test
-      CACHE_VIRTUAL_ENV:
-        description: Cache the python virtual env
-        required: false
-        # Ideally this would be a boolean but you can't have non-string defaults
-        # in actions
-        type: string
-        default: "true"
-
-
 
 jobs:
   test:
@@ -39,7 +30,6 @@ jobs:
           INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
           PYTHON_VERSION: ${{ matrix.python }}
-          CACHE_VIRTUAL_ENV: ${{ inputs.CACHE_VIRTUAL_ENV }}
 
       - name: Test
         run: poe ${{ inputs.TEST_TASK }}
