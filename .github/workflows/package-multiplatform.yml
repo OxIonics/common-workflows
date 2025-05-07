@@ -32,7 +32,7 @@ jobs:
     name: Build wheels for Python ${{ matrix.python }} on Windows
     strategy:
       matrix:
-        python: ["3.10"]
+        python: ["3.10", "3.12"]
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -87,7 +87,7 @@ jobs:
     name: Build wheels for Python ${{ matrix.python }} on Linux
     strategy:
       matrix:
-        python: ["3.10"]
+        python: ["3.10", "3.12"]
     container:
       image: ghcr.io/oxionics/poetry:1.30-py${{ matrix.python }}
     runs-on:
