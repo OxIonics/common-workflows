@@ -89,7 +89,7 @@ jobs:
       matrix:
         python: ["3.10", "3.12"]
     container:
-      image: ghcr.io/oxionics/poetry:1.30-py${{ matrix.python }}
+      image: ghcr.io/oxionics/poetry:1.31-py${{ matrix.python }}
     runs-on:
       group: Default
       labels: self-hosted
@@ -129,7 +129,7 @@ jobs:
   upload_wheels:
     needs: [build_linux_wheel, build_windows_wheel]
     if: github.event_name == 'push'
-    container: ghcr.io/oxionics/poetry:1.30-py3.10
+    container: ghcr.io/oxionics/poetry:1.31-py3.10
     runs-on:
       group: Default
       labels: self-hosted
