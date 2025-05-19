@@ -34,9 +34,8 @@ jobs:
           git config --global url."https://oxfordionics:${{ secrets.GHA_TOKEN }}@github.com".insteadOf ssh://git@github.com
           git config --global url."https://oxfordionics:${{ secrets.GHA_TOKEN }}@github.com/".insteadOf git@github.com:
 
-
       - name: Install
-        run: poetry install --sync
+        run: poetry sync
 
       - name: Build Binaries
         run: |
