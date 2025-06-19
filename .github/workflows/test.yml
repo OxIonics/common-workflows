@@ -22,7 +22,7 @@ jobs:
     runs-on:
       group: Default
       labels: self-hosted
-    container: ghcr.io/oxionics/poetry:1.32-py${{ matrix.python }}
+    container: ghcr.io/oxionics/poetry:1.33-py${{ matrix.python }}
     name: Unit Tests (Python ${{ matrix.python }})
     steps:
       - uses: OxIonics/poetry-preamble@master
