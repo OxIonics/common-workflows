@@ -22,6 +22,7 @@ jobs:
         with:
           INSTALL_ARGS: ${{ inputs.INSTALL_ARGS }}
           GHA_TOKEN: ${{ secrets.GHA_TOKEN }}
+          PYTHON_VERSION: "3.12"
 
       - name: Run pre-commit
         run: poetry run pre-commit run --all-files
