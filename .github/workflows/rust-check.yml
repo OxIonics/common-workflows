@@ -1,5 +1,9 @@
 name: Rust checks
 
+# We shouldn't need to run `git lfs checkout`, as the checkout action above it should handle it.
+# However, when a file is converted from non-LFS to LFS, the checkout on CI is not always
+# updated correctly. This forces the checkout to the correct state.
+
 on:
   workflow_call:
     inputs:
