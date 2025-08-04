@@ -1,5 +1,9 @@
 name: Rust checks
 
+# We shouldn't need to run `git lfs checkout`, as the checkout action above it should handle it.
+# However, when a file is converted from non-LFS to LFS, the checkout on CI is not always
+# updated correctly. This forces the checkout to the correct state.
+
 on:
   workflow_call:
     inputs:
@@ -30,6 +34,10 @@ jobs:
       labels: self-hosted
     steps:
       - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: LFS checkout
+        run: git lfs checkout
       - uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
         with:
           toolchain: ${{ inputs.CLIPPY_TOOLCHAIN }}
@@ -47,6 +55,10 @@ jobs:
       labels: self-hosted
     steps:
       - uses: actions/checkout@v3
+        with:
+          lfs: true
+      - name: LFS checkout
+        run: git lfs checkout
       - uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
       - uses: Swatinem/rust-cache@v2
       - run: poe test-rs
