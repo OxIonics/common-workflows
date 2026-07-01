@@ -18,10 +18,28 @@ on:
         required: false
         default: true
         type: boolean
+      # v5: opt-in dual-publish of the SAME built wheel to GAR pypi-internal.
+      GAR_PUBLISH:
+        description: "Also publish the built wheel to GAR ionics-shared/pypi-internal"
+        required: false
+        default: false
+        type: boolean
+      # v5: when true, a failed/drifted GAR publish fails the job. Leave false
+      # during rollout so a missing WIF grant cannot break the devpi publish.
+      GAR_REQUIRED:
+        description: "Fail the job on GAR publish failure or byte drift (flip true once WIF access is granted)"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build_and_upload_wheel:
     name: Build and upload wheel
+    # id-token needed for WIF when GAR_PUBLISH is true. Harmless otherwise, but
+    # the caller must also grant `permissions: id-token: write`.
+    permissions:
+      contents: read
+      id-token: write
     container:
       image: ghcr.io/oxionics/poetry:1.33-py3.10
     runs-on:
@@ -83,3 +101,62 @@ jobs:
         env:
           PIP_REQUESTS_TIMEOUT: 300
           POETRY_REQUESTS_TIMEOUT: 300
+
+      # ---- v5: GAR dual-publish -------------------------------------------
+      # Build-once: reuse the wheel in dist/ already published to devpi and push
+      # the SAME file to GAR ionics-shared/pypi-internal, so #5275's CI redirect
+      # bridge can resolve internal packages from GAR. No rebuild, no poetry-core
+      # pinning. Idempotent: if the version already exists in GAR, verify byte
+      # identity and no-op; on byte drift, fail loudly.
+      - name: Authenticate to GAR (WIF)
+        id: gar-auth
+        if: |
+          inputs.GAR_PUBLISH && github.event_name == 'push' && (
+            steps.poetry-lock-changed.outcome == 'skipped' ||
+            steps.poetry-lock-changed.outputs.only_modified == 'false'
+          )
+        continue-on-error: ${{ !inputs.GAR_REQUIRED }}
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
+        with:
+          project_id: ionics-shared
+          workload_identity_provider: projects/621469058481/locations/global/workloadIdentityPools/github-actions/providers/github-provider
+          service_account: github-ci-artifact-push@ionics-shared.iam.gserviceaccount.com
+          token_format: access_token
+
+      - name: Publish wheel to GAR (idempotent, verify-on-conflict)
+        if: |
+          inputs.GAR_PUBLISH && github.event_name == 'push' &&
+          steps.gar-auth.outcome == 'success' && (
+            steps.poetry-lock-changed.outcome == 'skipped' ||
+            steps.poetry-lock-changed.outputs.only_modified == 'false'
+          )
+        continue-on-error: ${{ !inputs.GAR_REQUIRED }}
+        env:
+          GAR_UPLOAD_URL: https://europe-west2-python.pkg.dev/ionics-shared/pypi-internal/
+          GAR_READ_URL: https://europe-west2-python.pkg.dev/ionics-shared/pypi
+          GAR_TOKEN: ${{ steps.gar-auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet --disable-pip-version-check twine
+          shopt -s nullglob
+          for whl in dist/*.whl; do
+            base="$(basename "$whl")"
+            echo "::group::GAR publish ${base}"
+            set +e
+            out="$(python3 -m twine upload --non-interactive --repository-url "$GAR_UPLOAD_URL" -u oauth2accesstoken -p "$GAR_TOKEN" "$whl" 2>&1)"
+            rc=$?
+            set -e
+            echo "$out"
+            if [ "$rc" -eq 0 ]; then
+              echo "Uploaded ${base} to GAR."
+              echo "::endgroup::"; continue
+            fi
+            if echo "$out" | grep -qiE "already exist|409|400 Bad Request"; then
+              pkg="$(echo "$base" | sed -E 's/-[0-9].*$//' | tr 'A-Z_' 'a-z-')"
+              python3 -c "import sys,hashlib,urllib.request as u; url,local,tok=sys.argv[1:4]; r=hashlib.sha256(u.urlopen(u.Request(url,headers={'Authorization':'Bearer '+tok}),timeout=90).read()).hexdigest(); l=hashlib.sha256(open(local,'rb').read()).hexdigest(); print('Already in GAR, identical bytes ('+r+'); no-op.') if r==l else sys.exit('::error::GAR DRIFT for '+local+': local '+l+' != GAR '+r+' (same version, different bytes; not overwriting)')" "$GAR_READ_URL/$pkg/$base" "$whl" "$GAR_TOKEN"
+            else
+              echo "::error::GAR upload failed for ${base} (rc=${rc})."
+              exit 1
+            fi
+            echo "::endgroup::"
+          done
