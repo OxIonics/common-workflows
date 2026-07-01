@@ -37,9 +37,12 @@ jobs:
     name: Build and upload wheel
     # id-token needed for WIF when GAR_PUBLISH is true. Harmless otherwise, but
     # the caller must also grant `permissions: id-token: write`.
+    # packages: read is required to pull the private ghcr.io/oxionics container
+    # below; naming any permission here drops the rest from the default set.
     permissions:
       contents: read
       id-token: write
+      packages: read
     container:
       image: ghcr.io/oxionics/poetry:1.33-py3.10
     runs-on:
