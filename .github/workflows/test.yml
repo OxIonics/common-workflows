@@ -21,7 +21,9 @@ jobs:
         python: ["3.10", "3.12"]
     runs-on:
       group: Default
-      labels: self-hosted
+      # vivado = the Docker-capable builders; excludes the Docker-less deploy
+      # runners that share the Default group. Temporary until they're regrouped.
+      labels: [self-hosted, vivado]
     container: ghcr.io/oxionics/poetry:1.33-py${{ matrix.python }}
     name: Unit Tests (Python ${{ matrix.python }})
     steps:
