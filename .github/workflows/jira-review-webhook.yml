@@ -1,0 +1,23 @@
+on:
+  workflow_call:
+    inputs:
+      team_slug:
+        description: "GitHub team slug that should trigger the Jira sync when requested as a PR reviewer"
+        required: true
+        type: string
+    secrets:
+      JIRA_WEBHOOK_URL:
+        required: true
+
+jobs:
+  forward-to-jira:
+    if: github.event.requested_team.slug == inputs.team_slug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Forward review request to Jira
+        env:
+          JIRA_WEBHOOK_URL: ${{ secrets.JIRA_WEBHOOK_URL }}
+        run: |
+          curl -sf -X POST "$JIRA_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            --data @"$GITHUB_EVENT_PATH"
