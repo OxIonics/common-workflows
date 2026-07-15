@@ -9,6 +9,9 @@ on:
       JIRA_WEBHOOK_URL:
         required: true
 
+# No GITHUB_TOKEN access needed — this only forwards the event to Jira.
+permissions: {}
+
 jobs:
   forward-to-jira:
     if: github.event.requested_team.slug == inputs.team_slug
