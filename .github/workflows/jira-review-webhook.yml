@@ -8,6 +8,8 @@ on:
     secrets:
       JIRA_WEBHOOK_URL:
         required: true
+      JIRA_WEBHOOK_TOKEN:
+        required: true
 
 # No GITHUB_TOKEN access needed — this only forwards the event to Jira.
 permissions: {}
@@ -20,8 +22,10 @@ jobs:
       - name: Forward review request to Jira
         env:
           JIRA_WEBHOOK_URL: ${{ secrets.JIRA_WEBHOOK_URL }}
+          JIRA_WEBHOOK_TOKEN: ${{ secrets.JIRA_WEBHOOK_TOKEN }}
         run: |
           curl -sS --fail-with-body -X POST "$JIRA_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
+            -H "X-Automation-Webhook-Token: $JIRA_WEBHOOK_TOKEN" \
             --data @"$GITHUB_EVENT_PATH" \
             -w '\nHTTP %{http_code}\n'
