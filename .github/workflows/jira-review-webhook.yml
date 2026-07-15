@@ -9,7 +9,8 @@ on:
       JIRA_WEBHOOK_URL:
         required: true
       JIRA_WEBHOOK_TOKEN:
-        required: true
+        # Required only for authenticated webhooks. Sent as a header when set.
+        required: false
 
 # No GITHUB_TOKEN access needed — this only forwards the event to Jira.
 permissions: {}
@@ -24,8 +25,14 @@ jobs:
           JIRA_WEBHOOK_URL: ${{ secrets.JIRA_WEBHOOK_URL }}
           JIRA_WEBHOOK_TOKEN: ${{ secrets.JIRA_WEBHOOK_TOKEN }}
         run: |
+          # Only send the auth header when a token is configured — supports
+          # both authenticated and unauthenticated Jira webhooks.
+          auth_header=()
+          if [ -n "$JIRA_WEBHOOK_TOKEN" ]; then
+            auth_header=(-H "X-Automation-Webhook-Token: $JIRA_WEBHOOK_TOKEN")
+          fi
           curl -sS --fail-with-body -X POST "$JIRA_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -H "X-Automation-Webhook-Token: $JIRA_WEBHOOK_TOKEN" \
+            "${auth_header[@]}" \
             --data @"$GITHUB_EVENT_PATH" \
             -w '\nHTTP %{http_code}\n'
