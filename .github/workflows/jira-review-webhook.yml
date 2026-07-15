@@ -21,6 +21,7 @@ jobs:
         env:
           JIRA_WEBHOOK_URL: ${{ secrets.JIRA_WEBHOOK_URL }}
         run: |
-          curl -sf -X POST "$JIRA_WEBHOOK_URL" \
+          curl -sS --fail-with-body -X POST "$JIRA_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            --data @"$GITHUB_EVENT_PATH"
+            --data @"$GITHUB_EVENT_PATH" \
+            -w '\nHTTP %{http_code}\n'
