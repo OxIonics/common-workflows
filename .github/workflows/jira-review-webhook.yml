@@ -12,15 +12,52 @@ on:
         # Required only for authenticated webhooks. Sent as a header when set.
         required: false
 
-# No GITHUB_TOKEN access needed — this only forwards the event to Jira.
 permissions: {}
 
 jobs:
   forward-to-jira:
-    if: github.event.requested_team.slug == inputs.team_slug
+    if: >-
+      (github.event.action == 'review_requested' && github.event.requested_team.slug == inputs.team_slug)
+      || github.event.action == 'closed'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
-      - name: Forward review request to Jira
+      - name: Check team was ever requested on this PR
+        if: github.event.action == 'closed'
+        id: check
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TEAM_SLUG: ${{ inputs.team_slug }}
+        run: |
+          # Team is stripped from requested_teams once reviewed, so closed
+          # events can't be filtered on the payload alone. Ask the timeline
+          # instead. Fails open: any error here still forwards to Jira.
+          was_requested=$(gh api graphql -f query='
+            query($owner: String!, $repo: String!, $number: Int!) {
+              repository(owner: $owner, name: $repo) {
+                pullRequest(number: $number) {
+                  timelineItems(itemTypes: [REVIEW_REQUESTED_EVENT], first: 100) {
+                    nodes {
+                      ... on ReviewRequestedEvent {
+                        requestedReviewer {
+                          ... on Team { slug }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' \
+            -F owner='${{ github.repository_owner }}' \
+            -F repo='${{ github.event.repository.name }}' \
+            -F number='${{ github.event.pull_request.number }}' \
+            --jq "[.data.repository.pullRequest.timelineItems.nodes[] | select(.requestedReviewer.slug == \"$TEAM_SLUG\")] | length > 0")
+          echo "was_requested=${was_requested:-true}" >> "$GITHUB_OUTPUT"
+
+      - name: Forward PR event to Jira
+        if: github.event.action == 'review_requested' || steps.check.outputs.was_requested != 'false'
         env:
           JIRA_WEBHOOK_URL: ${{ secrets.JIRA_WEBHOOK_URL }}
           JIRA_WEBHOOK_TOKEN: ${{ secrets.JIRA_WEBHOOK_TOKEN }}
