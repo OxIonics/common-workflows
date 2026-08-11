@@ -140,11 +140,13 @@ jobs:
           GAR_UPLOAD_URL: https://europe-west2-python.pkg.dev/ionics-shared/pypi-internal/
           GAR_READ_URL: https://europe-west2-python.pkg.dev/ionics-shared/pypi
           GAR_TOKEN: ${{ steps.gar-auth.outputs.access_token }}
+        # POSIX sh, not bash: the poetry job container has no bash, so the
+        # runner executes run steps with `sh -e`.
         run: |
-          set -euo pipefail
+          set -eu
           python3 -m pip install --quiet --disable-pip-version-check twine
-          shopt -s nullglob
           for whl in dist/*.whl; do
+            [ -e "$whl" ] || continue
             base="$(basename "$whl")"
             echo "::group::GAR publish ${base}"
             set +e
